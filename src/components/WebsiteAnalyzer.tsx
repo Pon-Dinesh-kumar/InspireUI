@@ -32,9 +32,9 @@ const WebsiteAnalyzer: React.FC<WebsiteAnalyzerProps> = ({ onAnalyze, isLoading 
   };
   
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="glass rounded-lg p-6">
-        <h3 className="text-xl font-semibold mb-4 text-gradient-primary">Enter Website Details</h3>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="glass rounded-lg p-8 border border-white/10 backdrop-blur-md transition duration-300 hover:border-purple/20">
+        <h3 className="text-xl font-semibold mb-6 text-gradient-primary">Enter Website Details</h3>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -46,26 +46,26 @@ const WebsiteAnalyzer: React.FC<WebsiteAnalyzerProps> = ({ onAnalyze, isLoading 
                 placeholder="e.g., example.com"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
-                className="bg-darkbg-lighter border-white/10 pl-10"
+                className="bg-darkbg-lighter border-white/10 pl-10 focus:border-purple/50 transition-all"
               />
               <Search className="absolute left-3 top-2.5 h-5 w-5 text-white/40" />
             </div>
           </div>
           
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label>Analysis Scope</Label>
             <RadioGroup 
               defaultValue="page"
               value={analysisType}
               onValueChange={(value) => setAnalysisType(value as 'page' | 'site')}
-              className="flex gap-4"
+              className="flex gap-6"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="page" id="page" />
+                <RadioGroupItem value="page" id="page" className="border-purple/50" />
                 <Label htmlFor="page" className="cursor-pointer">Single Page</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="site" id="site" />
+                <RadioGroupItem value="site" id="site" className="border-purple/50" />
                 <Label htmlFor="site" className="cursor-pointer">Entire Website</Label>
               </div>
             </RadioGroup>
@@ -73,7 +73,7 @@ const WebsiteAnalyzer: React.FC<WebsiteAnalyzerProps> = ({ onAnalyze, isLoading 
           
           <Button 
             type="submit" 
-            className="w-full bg-purple hover:bg-purple-dark"
+            className="w-full bg-purple hover:bg-purple-dark border border-purple-light/20 transition-all duration-300 group"
             disabled={!url || isLoading}
           >
             {isLoading ? (
@@ -82,21 +82,26 @@ const WebsiteAnalyzer: React.FC<WebsiteAnalyzerProps> = ({ onAnalyze, isLoading 
                 Analyzing...
               </>
             ) : (
-              'Analyze UI/UX'
+              <span className="flex items-center justify-center w-full group-hover:scale-105 transition-transform">
+                Analyze UI/UX
+              </span>
             )}
           </Button>
         </form>
       </div>
       
-      <div className="glass-dark rounded-lg p-6 flex flex-col justify-center items-center">
+      <div className="glass-dark rounded-lg p-8 flex flex-col justify-center items-center border border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-full h-full bg-gradient-radial from-purple/5 to-transparent opacity-60"></div>
+        <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-radial from-teal/5 to-transparent opacity-30"></div>
+        
         <img 
-          src="/lovable-uploads/0461f44f-6515-4a2a-97ca-4c8c1a5d6880.png" 
+          src="/lovable-uploads/a0023328-7e0f-4b5e-9049-9862b8708fff.png" 
           alt="UI Visualization" 
-          className="w-4/5 mb-6"
+          className="w-4/5 mb-8 relative z-10 transition-all duration-700 hover:scale-105"
         />
-        <div className="text-center">
+        <div className="text-center relative z-10">
           <h3 className="text-lg font-semibold text-gradient">InspireUI Analyzer</h3>
-          <p className="text-sm text-white/70 mt-2">
+          <p className="text-sm text-white/70 mt-3 max-w-md">
             Our advanced analysis tool will extract UI/UX patterns, color palettes, typography, and more from your provided website.
           </p>
         </div>
