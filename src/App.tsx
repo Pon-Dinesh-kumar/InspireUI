@@ -8,7 +8,6 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import Landing from "./pages/Landing";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -38,7 +37,6 @@ const App = () => (
       <BrowserRouter>
         <TitleUpdater />
         <Routes>
-          <Route path="/landing" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/" element={<Index />} />
           <Route path="*" element={<NotFound />} />

@@ -70,8 +70,19 @@ const Dashboard = () => {
   
   const handleReset = () => {
     setAnalysisData(null);
+    setIsAnalyzing(false);
+    // Add a small delay to ensure smooth transition
+    setTimeout(() => {
+      const elements = document.querySelectorAll('.fade-in-element');
+      elements.forEach((el, index) => {
+        setTimeout(() => {
+          el.classList.add('animate-fade-in');
+          el.classList.remove('opacity-0');
+        }, index * 150);
+      });
+    }, 100);
   };
-  
+
   return (
     <div className="min-h-screen bg-darkbg text-white p-6 relative overflow-hidden">
       {/* Background gradient effects */}

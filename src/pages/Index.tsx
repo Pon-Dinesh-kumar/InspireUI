@@ -25,46 +25,55 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-darkbg overflow-hidden">
-      {/* Navigation Bar */}
-      <nav className="w-full py-4 px-8 flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-gradient-pink-blue">InspireUI</Link>
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" className="text-white/80 hover:text-white">Login</Button>
-          <Button className="bg-gradient-pink-blue border-gradient hover:opacity-90 text-white">Register</Button>
+      {/* Enhanced Navigation Bar */}
+      <nav className="w-full py-6 px-8 flex justify-between items-center backdrop-blur-lg bg-darkbg/50 fixed top-0 z-50">
+        <Link to="/" className="text-2xl font-bold text-gradient-pink-blue hover:scale-105 transition-transform">
+          InspireUI
+        </Link>
+        <div className="flex items-center gap-6">
+          <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10">Login</Button>
+          <Button className="bg-gradient-pink-blue border-gradient hover:opacity-90 text-white hover:scale-105 transition-transform">
+            Register
+          </Button>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div className="flex-1 flex flex-col md:flex-row">
+      {/* Enhanced Hero Section */}
+      <div className="flex-1 flex flex-col md:flex-row pt-20">
         <div className="w-full md:w-1/2 flex flex-col justify-center px-8 py-16 md:px-16">
-          <div className="max-w-lg">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              <span className="text-gradient-pink-blue">Decode</span> and<br />
-              <span className="text-gradient-pink-blue">Recreate</span><br />
-              <span className="text-white">Website</span><br />
-              <span className="text-white">Designs</span>
+          <div className="max-w-3xl">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+              <div className="flex items-baseline gap-4 mb-2">
+                <span className="text-gradient-pink-blue animate-gradient">Decode</span>
+                <span className="text-white opacity-90">and</span>
+              </div>
+              <div className="text-gradient-pink-blue animate-gradient delay-100 mb-2">Recreate</div>
+              <div className="flex items-baseline gap-4 text-white opacity-90">
+                <span>Website</span>
+                <span>Designs</span>
+              </div>
             </h1>
             
-            <p className="text-lg text-white/80 mb-10 leading-relaxed">
+            <p className="text-xl text-white/80 leading-relaxed mt-8 max-w-2xl">
               InspireUI helps you understand and recreate website designs. 
               Input a URL to get a detailed UI/UX analysis and a prompt 
-              for generating similar designs. Save your analyses and prompts for later use.
+              for generating similar designs.
             </p>
             
-            <div className="flex space-x-4">
+            <div className="flex flex-col sm:flex-row gap-4 mt-12">
               <Button 
-                className="bg-gradient-pink-blue hover:opacity-90 text-white border-gradient px-6 py-6 group transition-all duration-300"
+                className="bg-gradient-pink-blue hover:opacity-90 text-white border-gradient px-8 py-7 group transition-all duration-300 hover:scale-105"
                 asChild
               >
-                <Link to="/dashboard" className="flex items-center text-base">
-                  Analyze a Website
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <Link to="/dashboard" className="flex items-center text-lg font-medium">
+                  Start Analyzing
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
                 </Link>
               </Button>
               
               <Button 
                 variant="outline" 
-                className="border-white/20 hover:border-pink/30 hover:bg-white/5 px-6 py-6"
+                className="border-white/20 hover:border-pink/30 hover:bg-white/5 px-8 py-7 text-lg font-medium hover:scale-105 transition-transform"
               >
                 Learn More
               </Button>
@@ -72,12 +81,10 @@ const Index = () => {
           </div>
         </div>
         
-        {/* UI Preview Area */}
+        {/* Enhanced UI Preview Area */}
         <div className="w-full md:w-1/2 flex items-center justify-center p-8 relative">
-          <div className="absolute top-0 right-0 w-full h-full bg-gradient-radial from-pink/10 to-transparent opacity-70"></div>
-          <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-radial from-blue/10 to-transparent opacity-70"></div>
-          
-          <div className="relative w-full max-w-lg aspect-square glass-animated rounded-2xl overflow-hidden animate-float-motion hover:scale-105 transition-all duration-700 hover:shadow-glow">
+          {/* Remove the radial gradients that create the background effect */}
+          <div className="relative w-full max-w-lg aspect-square glass-animated rounded-2xl overflow-hidden animate-float-motion hover:scale-105 transition-all duration-700">
             <div className="glass-shine"></div>
             
             {/* Mock UI Elements */}
@@ -125,13 +132,15 @@ const Index = () => {
           </div>
         </div>
       </div>
-      
-      {/* Features Section */}
-      <div className="bg-darkbg-lighter py-16 px-8 initial-hidden opacity-0">
+
+      {/* Enhanced Features Section */}
+      <div className="bg-darkbg-lighter py-24 px-8 initial-hidden opacity-0">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gradient-pink-blue">Key Features</h2>
+          <h2 className="text-4xl font-bold text-center mb-16 text-gradient-pink-blue">
+            Powerful Features
+          </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="glass-pink-blue p-8 rounded-xl hover-scale hover-glow transition duration-300">
               <div className="w-12 h-12 rounded-full bg-pink/20 flex items-center justify-center mb-4">
                 <Search className="w-6 h-6 text-pink" />
