@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Search, Palette, Code, Save } from "lucide-react";
 import { Link } from 'react-router-dom';
 
 const Index = () => {
@@ -12,16 +12,17 @@ const Index = () => {
         <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-16">
           <div className="max-w-lg">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gradient">
-              Welcome to InspireUI
+              InspireUI
             </h1>
             <p className="text-lg text-white/80 mb-8">
-              A modern, futuristic web application with dynamic UI/UX design. 
-              Experience the future of interface design with our glassmorphism effects and sleek animations.
+              Analyze and understand website UI/UX designs with precision. 
+              Input any URL and get a detailed breakdown of design elements 
+              plus a ready-to-use prompt for recreating similar interfaces.
             </p>
             <div className="flex space-x-4">
               <Button className="bg-purple hover:bg-purple-dark text-white" asChild>
                 <Link to="/dashboard" className="flex items-center">
-                  Launch Dashboard
+                  Analyze a Website
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -38,12 +39,12 @@ const Index = () => {
             <div className="absolute inset-0 bg-gradient-radial from-purple/20 to-transparent opacity-40"></div>
             <img 
               src="/lovable-uploads/0461f44f-6515-4a2a-97ca-4c8c1a5d6880.png" 
-              alt="Voedo Horizon 3000 FX" 
+              alt="InspireUI Preview" 
               className="object-contain w-4/5 h-4/5 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
             />
             <div className="absolute bottom-6 left-0 w-full text-center">
-              <h3 className="text-lg font-semibold text-gradient">Voedo Horizon 3000 FX</h3>
-              <p className="text-sm text-white/70">Premium Parking Management</p>
+              <h3 className="text-lg font-semibold text-gradient">UI/UX Analyzer</h3>
+              <p className="text-sm text-white/70">Detailed Website Analysis</p>
             </div>
           </div>
         </div>
@@ -57,39 +58,69 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="glass p-6 rounded-xl">
               <div className="w-12 h-12 rounded-full bg-purple/20 flex items-center justify-center mb-4">
-                <div className="w-6 h-6 text-purple">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
+                <Search className="w-6 h-6 text-purple" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Advanced Security</h3>
-              <p className="text-white/70">Real-time monitoring and instant alerts for any security issues with your vehicle.</p>
+              <h3 className="text-xl font-semibold mb-2">Deep Analysis</h3>
+              <p className="text-white/70">Extract layout, colors, typography, and UI elements from any website with precision.</p>
             </div>
             
             <div className="glass p-6 rounded-xl">
               <div className="w-12 h-12 rounded-full bg-teal/20 flex items-center justify-center mb-4">
-                <div className="w-6 h-6 text-teal">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
+                <Palette className="w-6 h-6 text-teal" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Smart Reservation</h3>
-              <p className="text-white/70">Reserve parking spots in advance and manage your parking time efficiently.</p>
+              <h3 className="text-xl font-semibold mb-2">Design Insights</h3>
+              <p className="text-white/70">Understand the design patterns and visual hierarchy that make websites effective.</p>
             </div>
             
             <div className="glass p-6 rounded-xl">
               <div className="w-12 h-12 rounded-full bg-purple/20 flex items-center justify-center mb-4">
-                <div className="w-6 h-6 text-purple">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
+                <Code className="w-6 h-6 text-purple" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Usage Analytics</h3>
-              <p className="text-white/70">Detailed insights about your parking history and usage patterns.</p>
+              <h3 className="text-xl font-semibold mb-2">Prompt Generation</h3>
+              <p className="text-white/70">Generate detailed prompts that can be used with UI generation tools or design teams.</p>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* How It Works */}
+      <div className="bg-darkbg py-16 px-8">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-2xl font-bold text-center mb-12 text-gradient">How It Works</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-darkbg-lighter glass-dark p-8 rounded-xl text-center">
+              <div className="w-14 h-14 rounded-full bg-purple/10 flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl font-bold text-purple">1</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Enter URL</h3>
+              <p className="text-white/70">Input any website URL and choose between analyzing a single page or the entire site.</p>
+            </div>
+            
+            <div className="bg-darkbg-lighter glass-dark p-8 rounded-xl text-center">
+              <div className="w-14 h-14 rounded-full bg-purple/10 flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl font-bold text-purple">2</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Automated Analysis</h3>
+              <p className="text-white/70">Our system analyzes the UI/UX elements, extracting colors, layout, and design patterns.</p>
+            </div>
+            
+            <div className="bg-darkbg-lighter glass-dark p-8 rounded-xl text-center">
+              <div className="w-14 h-14 rounded-full bg-purple/10 flex items-center justify-center mx-auto mb-6">
+                <span className="text-2xl font-bold text-purple">3</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-3">Get Results</h3>
+              <p className="text-white/70">Review the detailed analysis and generated prompt, then save or share your findings.</p>
+            </div>
+          </div>
+          
+          <div className="mt-12 text-center">
+            <Button className="bg-purple hover:bg-purple-dark text-white" size="lg" asChild>
+              <Link to="/dashboard" className="flex items-center">
+                Start Your First Analysis
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
