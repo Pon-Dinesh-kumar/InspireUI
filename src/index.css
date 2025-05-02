@@ -272,3 +272,40 @@
   mask-composite: exclude;
   border-radius: inherit;
 }
+
+/* FullPage.js specific styles */
+#fp-nav {
+  z-index: 49 !important;
+}
+
+.fp-watermark {
+  display: none !important;
+}
+
+/* Remove fixed padding/margin from sections */
+.section {
+  @apply relative;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Adjust content positioning */
+.fp-overflow {
+  height: 100vh !important;
+  margin: 0 !important;
+}
+
+/* Keep navigation dots visible */
+#fp-nav.fp-right {
+  right: 24px !important;
+}
+
+#fp-nav ul li a span,
+.fp-slidesNav ul li a span {
+  background: theme('colors.pink.DEFAULT');
+}
+
+/* Ensure fixed elements stay on top */
+#fixed-elements {
+  z-index: 1000;
+}
