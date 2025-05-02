@@ -278,6 +278,70 @@
   z-index: 49 !important;
 }
 
+#fp-nav.fp-right {
+  right: 24px !important;
+}
+
+#fp-nav ul li {
+  margin: 16px 0;
+  width: 10px;
+  height: 10px;
+}
+
+#fp-nav ul li a span {
+  background: transparent !important;
+  border: 2px solid rgba(217, 70, 239, 0.2);
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#fp-nav ul li a.active span {
+  background: linear-gradient(135deg, #D946EF, #1EAEDB) !important;
+  border: none;
+  transform: scale(1.4);
+  box-shadow: 0 0 15px rgba(217, 70, 239, 0.4);
+}
+
+#fp-nav ul li:hover a span {
+  border-color: rgba(217, 70, 239, 0.5);
+  transform: scale(1.2);
+}
+
+/* Tooltip Styling */
+#fp-nav ul li .fp-tooltip {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 6px 12px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(217, 70, 239, 0.2);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#fp-nav ul li:hover .fp-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+#fp-nav ul li .fp-tooltip.fp-right {
+  right: 24px;
+}
+
+/* Remove default tooltip visibility */
+#fp-nav ul li .fp-tooltip.fp-show {
+  opacity: 0;
+}
+
+#fp-nav ul li:hover .fp-tooltip.fp-show {
+  opacity: 1;
+}
 .fp-watermark {
   display: none !important;
 }

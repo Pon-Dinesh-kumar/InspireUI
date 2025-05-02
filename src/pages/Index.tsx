@@ -32,6 +32,10 @@ const Index = () => {
       paddingTop="80px"
       paddingBottom="80px"
       fixedElements="#fixed-elements"
+      navigation={true}
+      navigationPosition="right"
+      navigationTooltips={['Home', 'Features', 'How It Works']}
+      showActiveTooltip={true}
       render={({ state, fullpageApi }) => {
         return (
           <>
