@@ -39,8 +39,8 @@ const Dashboard = () => {
           columns: '12-column grid'
         },
         colors: {
-          primary: '#be2edd',
-          secondary: '#00cec9',
+          primary: '#D946EF',
+          secondary: '#1EAEDB',
           background: '#08090c',
           text: '#ffffff'
         },
@@ -56,7 +56,7 @@ const Dashboard = () => {
           'Custom navigation menu'
         ],
         theme: 'Modern, futuristic dark theme with glassmorphism effects',
-        prompt: `Create a modern web application with a dark theme (#08090c background) and vibrant purple (#be2edd) accent colors. Use glassmorphism for UI elements with subtle transparency and blur effects. Implement a responsive 12-column grid layout with clean typography using Inter font. Add rounded buttons with hover effects and card-based content presentation. The UI should feel futuristic and dynamic with subtle animations for interactions.`
+        prompt: `Create a modern web application with a dark theme (#08090c background) and vibrant pink (#D946EF) to blue (#1EAEDB) gradient accent colors. Use glassmorphism for UI elements with subtle transparency and blur effects. Implement a responsive 12-column grid layout with clean typography using Inter font. Add rounded buttons with hover effects and card-based content presentation. The UI should feel futuristic and dynamic with subtle animations for interactions.`
       };
       
       setAnalysisData(mockAnalysisData);
@@ -75,8 +75,8 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-darkbg text-white p-6 relative overflow-hidden">
       {/* Background gradient effects */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-radial from-purple/10 to-transparent opacity-50 blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-radial from-teal/10 to-transparent opacity-30 blur-3xl"></div>
+      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-radial from-pink/10 to-transparent opacity-50 blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-radial from-blue/10 to-transparent opacity-30 blur-3xl"></div>
       
       <div className="max-w-7xl mx-auto relative z-10">
         <Header />
@@ -87,13 +87,13 @@ const Dashboard = () => {
               <div className="flex items-center mb-6 fade-in-element opacity-0">
                 <Button 
                   variant="ghost" 
-                  className="text-white/80 hover:text-white mr-2" 
+                  className="text-white/80 hover:text-white mr-2 group" 
                   onClick={() => navigate('/')}
                 >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                   Back to Home
                 </Button>
-                <h2 className="text-2xl font-bold text-gradient">Website UI/UX Analyzer</h2>
+                <h2 className="text-2xl font-bold text-gradient-pink-blue">Website UI/UX Analyzer</h2>
               </div>
               
               <div className="fade-in-element opacity-0">
@@ -108,13 +108,13 @@ const Dashboard = () => {
               <div className="flex items-center mb-6">
                 <Button 
                   variant="ghost" 
-                  className="text-white/80 mr-2 hover:bg-white/5" 
+                  className="text-white/80 mr-2 hover:bg-white/5 group" 
                   onClick={handleReset}
                 >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                   New Analysis
                 </Button>
-                <h2 className="text-2xl font-bold text-gradient">Analysis Results</h2>
+                <h2 className="text-2xl font-bold text-gradient-pink-blue">Analysis Results</h2>
               </div>
               
               <AnalysisResults data={analysisData} />
