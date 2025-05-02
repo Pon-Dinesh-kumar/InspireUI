@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -87,7 +86,7 @@
   }
   
   .glass-animated {
-    @apply glass-pink-blue animate-shine relative overflow-hidden;
+    @apply glass-pink-blue relative overflow-hidden;
     background: linear-gradient(
       90deg,
       rgba(217, 70, 239, 0.1),
@@ -206,6 +205,20 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 2s infinite;
+}
+
+/* Modified animation for floating elements to avoid horizontal movement */
+@keyframes float-motion {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float-motion {
+  animation: float-motion 6s ease-in-out infinite;
 }
 
 /* For scroll animations */
