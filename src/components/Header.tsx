@@ -2,13 +2,18 @@
 import React from 'react';
 import { Bell, User, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <header className="w-full py-4 px-6 flex justify-between items-center glass-pink-blue rounded-lg border-gradient backdrop-blur-lg">
       <div className="flex items-center">
-        <Link to="/" className="text-xl font-bold text-gradient-pink-blue mr-10 hover:opacity-80 transition-colors">InspireUI</Link>
+        <Link 
+          to="/" 
+          className="text-xl font-bold bg-gradient-to-r from-pink to-blue bg-clip-text text-transparent hover:opacity-80 transition-opacity cursor-pointer z-10"
+        >
+          InspireUI
+        </Link>
         <nav className="hidden md:flex items-center space-x-1">
           <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10" asChild>
             <Link to="/dashboard">Dashboard</Link>

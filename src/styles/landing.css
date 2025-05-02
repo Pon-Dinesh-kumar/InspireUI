@@ -1,0 +1,73 @@
+.hero-image {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25), 
+              0 10px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: translateY(-5px);
+}
+
+.component-hover {
+  animation: popAndShine 0.5s ease;
+}
+
+@keyframes popAndShine {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+.landing-title {
+  font-size: 4rem;
+  line-height: 1.1;
+  background: linear-gradient(to right, #1a1a1a, #4a4a4a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: titleFade 1s ease-in;
+}
+
+@keyframes titleFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-indicator {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 50;
+}
+
+.scroll-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+  transition: all 0.3s ease;
+}
+
+.scroll-dot.active {
+  background-color: #1a1a1a;
+  transform: scale(1.5);
+}
