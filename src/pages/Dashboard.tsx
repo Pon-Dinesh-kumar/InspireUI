@@ -1,37 +1,61 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import WebsiteAnalyzer from '@/components/WebsiteAnalyzer';
 import AnalysisResults from '@/components/AnalysisResults';
+import { toast } from 'sonner';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import { toast } from '@/hooks/use-toast';
+import { Plus } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [analysisData, setAnalysisData] = useState<any>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisData, setAnalysisData] = useState(null);
 
-  // Animation effect on mount
+  // Clean up any fullpage effects and reset styles when component mounts
   useEffect(() => {
-    const elements = document.querySelectorAll('.fade-in-element');
-    elements.forEach((el, index) => {
-      setTimeout(() => {
-        el.classList.add('animate-fade-in');
-        el.classList.remove('opacity-0');
-      }, index * 150);
-    });
-  }, []);
-  
-  const handleAnalysis = (url: string, analysisType: 'page' | 'site') => {
-    setIsAnalyzing(true);
+    // Remove any fullpage-related classes
+    document.body.classList.remove('fp-viewing-0', 'fp-viewing-1', 'fp-viewing-2');
     
-    // Simulate API call with timeout
-    setTimeout(() => {
-      // This is mock data - in a real app, this would come from the backend
-      const mockAnalysisData = {
-        url: url,
+    // Reset body styles
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+    document.body.style.margin = '';
+    document.body.style.padding = '';
+    
+    // Remove any fullpage-related elements
+    const fullpageElements = document.querySelectorAll('.fp-section, .fp-slide, .fp-tableCell');
+    fullpageElements.forEach(el => el.remove());
+    
+    // Remove any fullpage-related styles
+    const fullpageStyles = document.querySelectorAll('style[data-fullpage]');
+    fullpageStyles.forEach(style => style.remove());
+
+    // Add fade-in animation for elements
+    const elements = document.querySelectorAll('.fade-in-element');
+    elements.forEach(el => {
+      el.classList.add('animate-fade-in');
+      el.classList.remove('opacity-0');
+    });
+
+    // Cleanup function
+    return () => {
+      elements.forEach(el => {
+        el.classList.remove('animate-fade-in');
+        el.classList.add('opacity-0');
+      });
+    };
+  }, []);
+
+  const handleAnalysis = async (url: string, analysisType: 'page' | 'site') => {
+    try {
+      setIsAnalyzing(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Mock analysis data
+      setAnalysisData({
+        url,
         type: analysisType,
         layout: {
           structure: 'Grid-based',
@@ -57,82 +81,63 @@ const Dashboard = () => {
         ],
         theme: 'Modern, futuristic dark theme with glassmorphism effects',
         prompt: `Create a modern web application with a dark theme (#08090c background) and vibrant pink (#D946EF) to blue (#1EAEDB) gradient accent colors. Use glassmorphism for UI elements with subtle transparency and blur effects. Implement a responsive 12-column grid layout with clean typography using Inter font. Add rounded buttons with hover effects and card-based content presentation. The UI should feel futuristic and dynamic with subtle animations for interactions.`
-      };
-      
-      setAnalysisData(mockAnalysisData);
-      setIsAnalyzing(false);
-      toast({
-        title: "Analysis complete",
-        description: "We've analyzed the website and generated results",
       });
-    }, 3000);
+
+      toast.success('Analysis completed successfully!');
+    } catch (error) {
+      toast.error('Failed to analyze website');
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
-  
+
   const handleReset = () => {
     setAnalysisData(null);
-    setIsAnalyzing(false);
-    // Add a small delay to ensure smooth transition
-    setTimeout(() => {
-      const elements = document.querySelectorAll('.fade-in-element');
-      elements.forEach((el, index) => {
-        setTimeout(() => {
-          el.classList.add('animate-fade-in');
-          el.classList.remove('opacity-0');
-        }, index * 150);
-      });
-    }, 100);
+    // Trigger fade-in animation for elements
+    const elements = document.querySelectorAll('.fade-in-element');
+    elements.forEach(el => {
+      el.classList.add('animate-fade-in');
+      el.classList.remove('opacity-0');
+    });
   };
 
   return (
-    <div className="min-h-screen bg-darkbg text-white p-6 relative overflow-hidden">
-      {/* Background gradient effects */}
-      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-radial from-pink/10 to-transparent opacity-50 blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-radial from-blue/10 to-transparent opacity-30 blur-3xl"></div>
-      
-      <div className="max-w-7xl mx-auto relative z-10">
-        <Header />
-        
-        <div className="mt-6">
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main className="container mx-auto px-6 py-8">
+        {/* Quick Actions */}
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gradient-pink-blue">Website Analysis</h1>
+            <p className="text-white/70 mt-1">Analyze and understand website designs</p>
+          </div>
+          <Button 
+            className="bg-gradient-pink-blue hover:opacity-90 text-white"
+            onClick={handleReset}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            New Analysis
+          </Button>
+        </div>
+
+        {/* Content Area */}
+        <div className="w-full">
           {!analysisData ? (
-            <div className="space-y-6">
-              <div className="flex items-center mb-6 fade-in-element opacity-0">
-                <Button 
-                  variant="ghost" 
-                  className="text-white/80 hover:text-white mr-2 group" 
-                  onClick={() => navigate('/')}
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                  Back to Home
-                </Button>
-                <h2 className="text-2xl font-bold text-gradient-pink-blue">Website UI/UX Analyzer</h2>
-              </div>
-              
-              <div className="fade-in-element opacity-0">
-                <WebsiteAnalyzer 
-                  onAnalyze={handleAnalysis} 
-                  isLoading={isAnalyzing} 
-                />
-              </div>
+            <div className="fade-in-element opacity-0">
+              <WebsiteAnalyzer 
+                onAnalyze={handleAnalysis}
+                isLoading={isAnalyzing}
+              />
             </div>
           ) : (
-            <div className="animate-fade-in">
-              <div className="flex items-center mb-6">
-                <Button 
-                  variant="ghost" 
-                  className="text-white/80 mr-2 hover:bg-white/5 group" 
-                  onClick={handleReset}
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                  New Analysis
-                </Button>
-                <h2 className="text-2xl font-bold text-gradient-pink-blue">Analysis Results</h2>
-              </div>
-              
-              <AnalysisResults data={analysisData} />
+            <div className="fade-in-element opacity-0">
+              <AnalysisResults 
+                data={analysisData}
+              />
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };

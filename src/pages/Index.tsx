@@ -1,10 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Search, Palette, Code } from "lucide-react";
 import { Link } from 'react-router-dom';
 import ReactFullpage from '@fullpage/react-fullpage';
 
 const Index = () => {
+  const fullpageApiRef = useRef<any>(null);
+
+  // Clean up fullpage when unmounting
+  useEffect(() => {
+    return () => {
+      if (fullpageApiRef.current) {
+        fullpageApiRef.current.destroy('all');
+      }
+      // Clean up any remaining fullpage elements
+      document.body.classList.remove('fp-viewing-0', 'fp-viewing-1', 'fp-viewing-2');
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+      document.body.style.margin = '';
+      document.body.style.padding = '';
+      
+      // Remove any fullpage-related elements
+      const fullpageElements = document.querySelectorAll('.fp-section, .fp-slide, .fp-tableCell');
+      fullpageElements.forEach(el => el.remove());
+      
+      // Remove any fullpage-related styles
+      const fullpageStyles = document.querySelectorAll('style[data-fullpage]');
+      fullpageStyles.forEach(style => style.remove());
+    };
+  }, []);
+
   // Animation effect on scroll
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -25,47 +50,48 @@ const Index = () => {
   }, []);
 
   return (
-    <ReactFullpage
-      licenseKey={'YOUR_KEY_HERE'}
-      scrollingSpeed={1000}
-      credits={{ enabled: true }}
-      paddingTop="80px"
-      paddingBottom="80px"
-      fixedElements="#fixed-elements"
-      navigation={true}
-      navigationPosition="right"
-      navigationTooltips={['Home', 'Features', 'How It Works']}
-      showActiveTooltip={true}
-      render={({ state, fullpageApi }) => {
-        return (
-          <>
-            <div id="fixed-elements">
-              <nav className="w-full py-6 px-8 flex justify-between items-center bg-darkbg/50 fixed top-0 z-50">
-                <Link to="/" className="text-2xl font-bold text-gradient-pink-blue hover:scale-105 transition-transform">
-                  InspireUI
-                </Link>
-                <div className="flex items-center gap-6">
-                  <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10">Login</Button>
-                  <Button className="bg-gradient-pink-blue border-gradient hover:opacity-90 text-white hover:scale-105 transition-transform">
-                    Register
-                  </Button>
-                </div>
-              </nav>
-              
-              <footer className="w-full py-4 px-8 flex justify-between items-center backdrop-blur-lg bg-darkbg/50 fixed bottom-0 z-50">
-                <div className="flex items-center gap-4 text-white/70">
-                  <span>© 2024 InspireUI</span>
-                  <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-                  <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
-                </div>
-                <div className="flex items-center gap-6">
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">Twitter</a>
-                  <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">GitHub</a>
-                  <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">Discord</a>
-                </div>
-              </footer>
-            </div>
+    <div className="min-h-screen bg-darkbg text-white">
+      {/* Landing page header */}
+      <nav className="w-full py-6 px-8 flex justify-between items-center bg-darkbg/50 fixed top-0 z-50">
+        <Link to="/" className="text-2xl font-bold text-gradient-pink-blue hover:scale-105 transition-transform">
+          InspireUI
+        </Link>
+        <div className="flex items-center gap-6">
+          <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10">Login</Button>
+          <Button className="bg-gradient-pink-blue border-gradient hover:opacity-90 text-white hover:scale-105 transition-transform">
+            Register
+          </Button>
+        </div>
+      </nav>
 
+      {/* Landing page footer */}
+      <footer className="w-full py-4 px-8 flex justify-between items-center backdrop-blur-lg bg-darkbg/50 fixed bottom-0 z-50">
+        <div className="flex items-center gap-4 text-white/70">
+          <span>© 2024 InspireUI</span>
+          <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+          <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
+        </div>
+        <div className="flex items-center gap-6">
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">Twitter</a>
+          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">GitHub</a>
+          <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors">Discord</a>
+        </div>
+      </footer>
+
+      <ReactFullpage
+        licenseKey={'YOUR_KEY_HERE'}
+        scrollingSpeed={1000}
+        credits={{ enabled: true }}
+        paddingTop="80px"
+        paddingBottom="80px"
+        fixedElements="#fixed-elements"
+        navigation={true}
+        navigationPosition="right"
+        navigationTooltips={['Home', 'Features', 'How It Works']}
+        showActiveTooltip={true}
+        render={({ state, fullpageApi }) => {
+          fullpageApiRef.current = fullpageApi;
+          return (
             <ReactFullpage.Wrapper>
               <div className="section">
                 {/* Hero Section */}
@@ -113,7 +139,6 @@ const Index = () => {
                   
                   {/* Enhanced UI Preview Area */}
                   <div className="w-full md:w-1/2 flex items-center justify-center p-8 relative">
-                    {/* Remove the radial gradients that create the background effect */}
                     <div className="relative w-full max-w-lg aspect-square glass-animated rounded-2xl overflow-hidden animate-float-motion hover:scale-105 transition-all duration-700">
                       <div className="glass-shine"></div>
                       
@@ -249,10 +274,10 @@ const Index = () => {
                 </div>
               </div>
             </ReactFullpage.Wrapper>
-          </>
-        );
-      }}
-    />
+          );
+        }}
+      />
+    </div>
   );
 };
 

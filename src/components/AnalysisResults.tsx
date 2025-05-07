@@ -1,11 +1,26 @@
-
-import React, { useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Check } from "lucide-react";
+import { 
+  Eye, 
+  Code, 
+  Smartphone, 
+  Monitor, 
+  Tablet, 
+  Share2, 
+  Copy, 
+  Check, 
+  RefreshCw, 
+  Minimize, 
+  Maximize, 
+  MousePointer,
+  AlertCircle,
+  Globe
+} from "lucide-react";
 import { toast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
+import html2canvas from 'html2canvas';
 
 interface AnalysisData {
   url: string;
@@ -36,189 +51,421 @@ interface AnalysisResultsProps {
 }
 
 const AnalysisResults: React.FC<AnalysisResultsProps> = ({ data }) => {
-  const [activeTab, setActiveTab] = useState("analysis");
+  const [previewMode, setPreviewMode] = useState<'iframe' | 'screenshot'>('iframe');
+  const [deviceMode, setDeviceMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState(false);
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isPreviewInteractive, setIsPreviewInteractive] = useState(false);
   const [copied, setCopied] = useState(false);
-  
-  if (!data) {
-    return <div>No analysis data available.</div>;
-  }
-  
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const hiddenIframeRef = useRef<HTMLIFrameElement>(null);
+
+  const getDeviceWidth = () => {
+    switch (deviceMode) {
+      case 'mobile':
+        return '375px';
+      case 'tablet':
+        return '768px';
+      case 'desktop':
+      default:
+        return '100%';
+    }
+  };
+
+  const captureScreenshot = async () => {
+    if (!hiddenIframeRef.current) return;
+    
+    try {
+      setIsPreviewLoading(true);
+      const iframe = hiddenIframeRef.current;
+      
+      // Wait for iframe to load
+      await new Promise((resolve) => {
+        iframe.onload = resolve;
+        iframe.src = data.url;
+      });
+
+      // Wait for content to be fully rendered
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      const canvas = await html2canvas(iframe.contentDocument.body, {
+        allowTaint: true,
+        useCORS: true,
+        scale: 1,
+        logging: false,
+        windowWidth: iframe.contentDocument.documentElement.scrollWidth,
+        windowHeight: iframe.contentDocument.documentElement.scrollHeight
+      });
+
+      const screenshotUrl = canvas.toDataURL('image/png');
+      setScreenshotUrl(screenshotUrl);
+      setPreviewMode('screenshot');
+      setIsPreviewLoading(false);
+    } catch (error) {
+      console.error('Failed to capture screenshot:', error);
+      setPreviewError(true);
+      setIsPreviewLoading(false);
+    }
+  };
+
+  const handlePreviewError = () => {
+    setPreviewError(true);
+    toast({
+      title: "Preview Error",
+      description: "Unable to load website preview. Switching to screenshot mode...",
+      variant: "destructive"
+    });
+    captureScreenshot();
+  };
+
+  const handleRetryPreview = () => {
+    setPreviewError(false);
+    setIsPreviewLoading(true);
+    setPreviewMode('iframe');
+    if (iframeRef.current) {
+      iframeRef.current.src = data.url;
+    }
+  };
+
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const handlePreviewLoad = () => {
+    setIsPreviewLoading(false);
+    setIsPreviewInteractive(true);
+  };
+
+  const handlePreviewInteraction = () => {
+    if (!isPreviewInteractive) {
+      setIsPreviewInteractive(true);
+    }
+  };
+
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(data.prompt);
+    navigator.clipboard.writeText(data.url);
     setCopied(true);
     toast({
-      title: "Copied to clipboard",
-      description: "The prompt has been copied to your clipboard",
+      title: "URL Copied",
+      description: "Website URL has been copied to clipboard",
     });
-    
     setTimeout(() => setCopied(false), 2000);
   };
-  
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
       {/* Left Column - Website Preview */}
       <div className="lg:col-span-7">
-        <div className="glass rounded-lg p-6 h-full">
-          <h3 className="text-xl font-semibold mb-4 text-gradient-primary">
-            Website Preview
-          </h3>
-          
-          <div className="bg-darkbg-panel rounded-lg p-4 border border-white/5 mb-4">
-            <div className="flex items-center justify-between">
-              <Badge variant="outline" className="bg-darkbg-lighter text-white/70">
-                {data.url}
-              </Badge>
-              <Badge variant="outline" className="bg-purple/20 text-purple">
-                {data.type === 'page' ? 'Single Page' : 'Entire Website'}
-              </Badge>
-            </div>
-          </div>
-          
-          <div className="relative h-[400px] rounded-lg overflow-hidden border border-white/10">
-            <div className="absolute inset-0 flex items-center justify-center bg-darkbg-lighter">
-              <div className="text-center">
-                <img 
-                  src="/lovable-uploads/0461f44f-6515-4a2a-97ca-4c8c1a5d6880.png" 
-                  alt="Website Preview" 
-                  className="mx-auto w-3/4 max-h-[300px] object-contain"
-                />
-                <p className="text-sm text-white/60 mt-4">
-                  Preview visualization for {data.url}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-6">
-            <h4 className="text-lg font-medium mb-3">Theme Summary</h4>
-            <p className="text-white/80">{data.theme}</p>
-          </div>
-        </div>
-      </div>
-      
-      {/* Right Column - Analysis & Prompt */}
-      <div className="lg:col-span-5">
-        <div className="glass-dark rounded-lg p-1">
-          <Tabs defaultValue="analysis" className="w-full" onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-2 bg-darkbg-panel mb-4">
-              <TabsTrigger value="analysis" className="data-[state=active]:text-purple">Analysis</TabsTrigger>
-              <TabsTrigger value="prompt" className="data-[state=active]:text-purple">Prompt</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="analysis" className="space-y-6 animate-fade-in p-5">
-              <div>
-                <h4 className="text-md font-semibold mb-2">Layout</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  <Card className="bg-darkbg-panel border-none">
-                    <CardContent className="p-3">
-                      <p className="text-xs text-white/60">Structure</p>
-                      <p className="font-medium">{data.layout.structure}</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-darkbg-panel border-none">
-                    <CardContent className="p-3">
-                      <p className="text-xs text-white/60">Columns</p>
-                      <p className="font-medium">{data.layout.columns}</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="bg-darkbg-panel border-none col-span-2">
-                    <CardContent className="p-3">
-                      <p className="text-xs text-white/60">Responsive</p>
-                      <p className="font-medium">{data.layout.responsive ? 'Yes' : 'No'}</p>
-                    </CardContent>
-                  </Card>
+        <Card className={`bg-darkbg-panel border-white/10 overflow-hidden transition-all duration-300 ${
+          isFullscreen ? 'fixed inset-4 z-50' : ''
+        }`}>
+          <CardContent className="p-0">
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-semibold">Website Preview</h3>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-3"
+                    onClick={copyToClipboard}
+                  >
+                    {copied ? (
+                      <Check className="h-4 w-4 text-green-400" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-3"
+                    onClick={() => window.open(data.url, '_blank')}
+                  >
+                    <Share2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-              
-              <div>
-                <h4 className="text-md font-semibold mb-2">Color Palette</h4>
-                <div className="grid grid-cols-4 gap-2">
-                  {Object.entries(data.colors).map(([name, color]) => (
-                    <div key={name} className="text-center">
-                      <div 
-                        className="w-full h-10 rounded mb-1" 
-                        style={{ backgroundColor: color }}
-                      ></div>
-                      <p className="text-xs text-white/60 capitalize">{name}</p>
-                      <p className="text-xs font-mono">{color}</p>
-                    </div>
-                  ))}
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 bg-darkbg-lighter/50 rounded-lg p-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`h-8 px-3 ${
+                      deviceMode === 'desktop' ? 'bg-purple/20 text-purple' : 'text-white/70'
+                    }`}
+                    onClick={() => setDeviceMode('desktop')}
+                  >
+                    <Monitor className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`h-8 px-3 ${
+                      deviceMode === 'tablet' ? 'bg-purple/20 text-purple' : 'text-white/70'
+                    }`}
+                    onClick={() => setDeviceMode('tablet')}
+                  >
+                    <Tablet className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`h-8 px-3 ${
+                      deviceMode === 'mobile' ? 'bg-purple/20 text-purple' : 'text-white/70'
+                    }`}
+                    onClick={() => setDeviceMode('mobile')}
+                  >
+                    <Smartphone className="h-4 w-4" />
+                  </Button>
                 </div>
-              </div>
-              
-              <div>
-                <h4 className="text-md font-semibold mb-2">Typography</h4>
-                <div className="space-y-2">
-                  {Object.entries(data.typography).map(([name, value]) => (
-                    <div key={name} className="flex justify-between">
-                      <span className="text-sm text-white/60 capitalize">{name}:</span>
-                      <span className="text-sm">{value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h4 className="text-md font-semibold mb-2">UI Elements</h4>
-                <div className="flex flex-wrap gap-2">
-                  {data.uiElements.map((element, index) => (
-                    <Badge key={index} className="bg-darkbg-lighter border-white/10">
-                      {element}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="prompt" className="animate-fade-in p-5">
-              <div className="bg-darkbg-panel rounded-lg p-4 border border-white/10 mb-4">
-                <h4 className="text-md font-semibold mb-2">Generated UI/UX Prompt</h4>
-                <p className="text-sm text-white/80 leading-relaxed">
-                  {data.prompt}
-                </p>
-              </div>
-              
-              <div className="flex justify-end">
-                <Button 
-                  onClick={copyToClipboard} 
-                  className="bg-purple hover:bg-purple-dark"
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`h-8 px-3 ${
+                    previewMode === 'iframe' ? 'bg-purple/20 text-purple' : 'text-white/70'
+                  }`}
+                  onClick={() => setPreviewMode('iframe')}
                 >
-                  {copied ? (
-                    <>
-                      <Check className="mr-2 h-4 w-4" />
-                      Copied!
-                    </>
+                  <Monitor className="h-4 w-4 mr-2" />
+                  Live Preview
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`h-8 px-3 ${
+                    previewMode === 'screenshot' ? 'bg-purple/20 text-purple' : 'text-white/70'
+                  }`}
+                  onClick={() => setPreviewMode('screenshot')}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  Screenshot
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-3"
+                  onClick={toggleFullscreen}
+                >
+                  {isFullscreen ? (
+                    <Minimize className="h-4 w-4" />
                   ) : (
-                    <>
-                      <Copy className="mr-2 h-4 w-4" />
-                      Copy Prompt
-                    </>
+                    <Maximize className="h-4 w-4" />
                   )}
                 </Button>
               </div>
-              
-              <div className="mt-6 bg-darkbg-lighter rounded-lg p-4">
-                <h4 className="text-md font-semibold mb-2">How to Use This Prompt</h4>
-                <ul className="text-sm text-white/70 space-y-2 list-disc ml-5">
-                  <li>Copy the generated prompt above</li>
-                  <li>Use it with design tools that support text-to-design functionality</li>
-                  <li>Fine-tune the results by editing specific elements of the prompt</li>
-                  <li>Share the prompt with your design team for consistent implementation</li>
-                </ul>
+            </div>
+
+            <div className="relative mx-auto transition-all duration-300 w-full">
+              {previewError ? (
+                <div className="p-8 text-center">
+                  <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+                  <h4 className="text-lg font-medium mb-2">Preview Error</h4>
+                  <p className="text-white/60 mb-4">
+                    Unable to load website preview. This might be due to:
+                  </p>
+                  <ul className="text-white/60 mb-4 text-left list-disc pl-6 space-y-2">
+                    <li>The website blocking external access</li>
+                    <li>Network connectivity issues</li>
+                    <li>Security restrictions</li>
+                  </ul>
+                  <div className="flex flex-col gap-4 items-center">
+                    <Button
+                      variant="outline"
+                      onClick={handleRetryPreview}
+                      className="gap-2"
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      Try Preview Again
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => window.open(data.url, '_blank')}
+                      className="gap-2"
+                    >
+                      <Globe className="h-4 w-4" />
+                      Open in New Tab
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-b from-purple/5 to-pink/5 pointer-events-none" />
+                  {isPreviewLoading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-darkbg-panel/80 backdrop-blur-sm">
+                      <div className="flex flex-col items-center gap-2">
+                        <RefreshCw className="h-8 w-8 animate-spin text-purple" />
+                        <p className="text-white/70">Loading preview...</p>
+                      </div>
+                    </div>
+                  )}
+                  <div className="relative">
+                    <div className="relative overflow-hidden rounded-lg border border-white/10">
+                      {previewMode === 'iframe' ? (
+                        <div className="flex justify-center bg-darkbg-lighter/50 p-4">
+                          <div 
+                            className="transition-all duration-300 ease-in-out"
+                            style={{ width: getDeviceWidth() }}
+                          >
+                            <iframe
+                              ref={iframeRef}
+                              src={data.url}
+                              className="w-full h-[600px] bg-white rounded-lg shadow-lg"
+                              onLoad={handlePreviewLoad}
+                              onError={handlePreviewError}
+                              onMouseEnter={handlePreviewInteraction}
+                              onTouchStart={handlePreviewInteraction}
+                              sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"
+                              referrerPolicy="no-referrer"
+                              title="Website Preview"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          {screenshotUrl ? (
+                            <div className="flex justify-center bg-darkbg-lighter/50 p-4">
+                              <div 
+                                className="transition-all duration-300 ease-in-out"
+                                style={{ width: getDeviceWidth() }}
+                              >
+                                <img
+                                  src={screenshotUrl}
+                                  alt="Website Screenshot"
+                                  className="w-full h-auto rounded-lg shadow-lg"
+                                  onError={() => {
+                                    setPreviewError(true);
+                                    toast({
+                                      title: "Screenshot Error",
+                                      description: "Unable to load screenshot. Please try opening the website in a new tab.",
+                                      variant: "destructive"
+                                    });
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="h-[600px] flex items-center justify-center bg-darkbg-lighter">
+                              <div className="text-center">
+                                <RefreshCw className="h-8 w-8 animate-spin text-purple mx-auto mb-2" />
+                                <p className="text-white/70">Generating screenshot...</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {!isPreviewInteractive && previewMode === 'iframe' && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-darkbg-panel/80 backdrop-blur-sm">
+                        <div className="text-center p-4">
+                          <p className="text-white/70 mb-2">Click to interact with the preview</p>
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsPreviewInteractive(true)}
+                            className="gap-2"
+                          >
+                            <MousePointer className="h-4 w-4" />
+                            Enable Interaction
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Hidden iframe for screenshot capture */}
+      <iframe
+        ref={hiddenIframeRef}
+        className="hidden"
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+        title="Hidden Screenshot Capture"
+      />
+
+      {/* Right Column - Analysis Details */}
+      <div className="lg:col-span-5">
+        <Card className="bg-darkbg-panel border-white/10">
+          <CardContent className="p-6">
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Layout Analysis</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                    <p className="text-white/70 mb-1">Structure</p>
+                    <p className="font-medium">{data.layout.structure}</p>
+                  </div>
+                  <div className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                    <p className="text-white/70 mb-1">Responsive</p>
+                    <p className="font-medium">{data.layout.responsive ? 'Yes' : 'No'}</p>
+                  </div>
+                  <div className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                    <p className="text-white/70 mb-1">Grid System</p>
+                    <p className="font-medium">{data.layout.columns}</p>
+                  </div>
+                </div>
               </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-        
-        <div className="mt-6 glass rounded-lg p-5">
-          <h4 className="text-md font-semibold mb-3">Save This Analysis</h4>
-          <p className="text-sm text-white/70 mb-4">
-            Save this analysis to your account to access it later or share with your team.
-          </p>
-          <Button className="w-full bg-teal hover:bg-teal-dark">
-            Save to My Analyses
-          </Button>
-        </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Color Scheme</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {Object.entries(data.colors).map(([key, value]) => (
+                    <div key={key} className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                      <div 
+                        className="w-full h-8 rounded mb-2" 
+                        style={{ backgroundColor: value }}
+                      />
+                      <p className="text-white/70 mb-1 capitalize">{key}</p>
+                      <p className="font-medium">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Typography</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  {Object.entries(data.typography).map(([key, value]) => (
+                    <div key={key} className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                      <p className="text-white/70 mb-1 capitalize">{key}</p>
+                      <p className="font-medium">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">UI Elements</h3>
+                <div className="grid grid-cols-1 gap-4">
+                  {data.uiElements.map((element, index) => (
+                    <div key={index} className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                      <p className="font-medium">{element}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Theme</h3>
+                <div className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                  <p className="font-medium">{data.theme}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Design Prompt</h3>
+                <div className="bg-darkbg-lighter/50 p-4 rounded-lg">
+                  <p className="font-medium whitespace-pre-wrap">{data.prompt}</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
